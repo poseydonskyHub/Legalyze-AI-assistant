@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Databases and local storage
+*.db
+*.sqlite
+*.sqlite3
+backend/legal_assistant.db
+backend/storage/
+
+# Qt / CMake / build outputs
+build/
+cmake-build-*/
+qt_client/build/
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.exe
+*.app
+
+# IDE files
+.idea/
+.vscode/
+*.user
+*.pro.user
+
+# OS files
+.DS_Store
+Thumbs.db
