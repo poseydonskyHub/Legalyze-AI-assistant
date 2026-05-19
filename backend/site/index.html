@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legalyze Demo</title>
+  <style>
+    :root {
+      --bg: #0f1720;
+      --surface: rgba(19, 31, 45, 0.82);
+      --card: rgba(255, 255, 255, 0.06);
+      --line: rgba(255, 255, 255, 0.10);
+      --text: #eef4fb;
+      --muted: #9fb0c3;
+      --accent: #f4a340;
+      --accent-2: #f6c271;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+      --radius: 26px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Inter", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(244, 163, 64, 0.22), transparent 28%),
+        radial-gradient(circle at 100% 20%, rgba(80, 145, 255, 0.18), transparent 22%),
+        linear-gradient(180deg, #0b1219 0%, var(--bg) 100%);
+    }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 56px 0 20px;
+    }
+
+    .hero-card {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      gap: 24px;
+      padding: 36px;
+      border-radius: 34px;
+      background: linear-gradient(145deg, rgba(18, 29, 43, 0.92), rgba(14, 21, 31, 0.95));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1d160d;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    h1 {
+      margin: 18px 0 14px;
+      font-size: clamp(40px, 6vw, 68px);
+      line-height: 1;
+    }
+
+    .lead {
+      margin: 0;
+      max-width: 680px;
+      font-size: 18px;
+      line-height: 1.75;
+      color: var(--muted);
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 22px;
+      border-radius: 16px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform .16s ease, opacity .16s ease, background .16s ease;
+    }
+
+    .button:hover { transform: translateY(-1px); }
+
+    .button-primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #1b1308;
+    }
+
+    .button-secondary {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .stack {
+      display: grid;
+      gap: 16px;
+    }
+
+    .mini-card,
+    .section-card {
+      padding: 22px;
+      border-radius: var(--radius);
+      background: var(--card);
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 38px rgba(0, 0, 0, 0.18);
+    }
+
+    .mini-card strong,
+    .section-card h2 {
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    .mini-card span,
+    .section-card p,
+    .section-card li {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      padding: 12px 0 24px;
+    }
+
+    .demo-banner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(244, 163, 64, 0.08);
+      border: 1px solid rgba(244, 163, 64, 0.24);
+    }
+
+    .demo-banner strong {
+      color: #ffd59b;
+    }
+
+    .showcase {
+      margin-top: 18px;
+      padding: 22px;
+      border-radius: 26px;
+      background: linear-gradient(145deg, rgba(11, 18, 25, 0.98), rgba(17, 27, 39, 0.98));
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.22);
+    }
+
+    .showcase-window {
+      max-width: 430px;
+      margin: 0 auto;
+      padding: 28px;
+      border-radius: 30px;
+      background: #111b27;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.26);
+    }
+
+    .demo-pill {
+      display: inline-flex;
+      padding: 9px 18px;
+      border-radius: 14px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #1b1308;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .showcase-window h3 {
+      margin: 0 0 12px;
+      font-size: 30px;
+      line-height: 1.05;
+    }
+
+    .showcase-window p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .mock-label {
+      margin: 16px 0 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #dce7f3;
+    }
+
+    .mock-input,
+    .mock-status {
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      border-radius: 14px;
+      background: #1a2839;
+      border: 1px solid rgba(255,255,255,0.10);
+      color: #8596a8;
+    }
+
+    .mock-input.focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(244,163,64,0.22);
+    }
+
+    .mock-status {
+      margin-top: 16px;
+      min-height: 24px;
+      padding: 12px 0 0;
+      background: transparent;
+      border: none;
+      color: #9fd5aa;
+    }
+
+    .mock-actions {
+      display: grid;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .mock-button {
+      min-height: 44px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .mock-button.primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: #1b1308;
+    }
+
+    .mock-button.secondary {
+      background: #2a3c53;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .donation {
+      margin: 8px 0 48px;
+      padding: 24px;
+      border-radius: 30px;
+      background: linear-gradient(145deg, rgba(19, 31, 45, 0.92), rgba(14, 21, 31, 0.95));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .donation-link {
+      margin-top: 18px;
+    }
+
+    .footer {
+      padding: 0 0 36px;
+      color: #90a2b6;
+      font-size: 14px;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .hero-card,
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card {
+        padding: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container hero">
+    <section class="hero-card">
+      <div>
+        <span class="badge">Demo • AI Legal Assistant</span>
+        <h1>Legalyze</h1>
+        <p class="lead">
+          Десктопный юридический ассистент для анализа документов, вопросов по договорам и поиска по официальным актам.
+          Сейчас проект работает в демо-режиме: без подписок и без скрытых платежей, с понятным дневным лимитом запросов.
+        </p>
+        <div class="actions">
+          <a class="button button-primary" href="https://dalink.to/legalyze" target="_blank" rel="noopener noreferrer">Поддержать проект</a>
+          <a class="button button-secondary" href="#screens">Скриншоты</a>
+          <a class="button button-secondary" href="#contacts">Контакты</a>
+        </div>
+        <div class="demo-banner">
+          <div>
+            <strong>Демо-версия: 5 запросов в день</strong><br>
+            Лимит обновляется автоматически каждый новый день.
+          </div>
+          <div>Тарифы и платная подписка временно скрыты.</div>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="mini-card">
+          <strong>Что уже умеет</strong>
+          <span>Загрузка PDF, DOCX, HTML и изображений документов, RAG по локальной базе, ссылки на pravo.gov.ru и структурированные юридические ответы.</span>
+        </div>
+        <div class="mini-card">
+          <strong>Для кого</strong>
+          <span>Для юристов, фрилансеров, предпринимателей и тех, кому нужен быстрый первичный разбор документа без сложной установки.</span>
+        </div>
+        <div class="mini-card">
+          <strong>Формат поддержки</strong>
+          <span>Сейчас проект развивается как демо-продукт. Если сервис полезен, можно поддержать разработку через DonationAlerts.</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="container">
+    <div class="section-grid">
+      <section class="section-card">
+        <h2>Описание</h2>
+        <p>
+          Legalyze помогает быстро разобрать текст договора, выделить риски, найти спорные формулировки и сверить вопрос
+          с официальными правовыми источниками. Ответы формируются в понятном виде и сопровождаются цитатами и ссылками.
+        </p>
+        <ul>
+          <li>Анализ договоров, претензий и деловой переписки</li>
+          <li>Ответы по загруженным документам и базе правовых актов</li>
+          <li>Десктопный формат работы через Qt-приложение</li>
+        </ul>
+      </section>
+
+      <section class="section-card" id="contacts">
+        <h2>Контакты</h2>
+        <p>
+          Здесь можно указать название проекта, описание команды, e-mail и юридические реквизиты.
+          Этот блок специально оставлен простым, чтобы ты сам подставил нужные данные перед публикацией.
+        </p>
+        <p><strong>Контакты:</strong> укажи свои здесь</p>
+      </section>
+
+      <section class="section-card" id="screens">
+        <h2>Скриншоты</h2>
+        <div class="showcase">
+          <div class="showcase-window">
+            <div class="demo-pill">Demo access</div>
+            <h3>Вход в Legalyze</h3>
+            <p>Авторизуйся, чтобы работать с чатом, загружать документы и использовать демо-режим на 5 запросов в день.</p>
+
+            <div class="mock-label">Email</div>
+            <div class="mock-input focus">name@example.com</div>
+
+            <div class="mock-label">Имя</div>
+            <div class="mock-input">Имя для регистрации</div>
+
+            <div class="mock-label">Пароль</div>
+            <div class="mock-input">Пароль</div>
+
+            <div class="mock-status">Введите данные для входа.</div>
+
+            <div class="mock-actions">
+              <div class="mock-button primary">Войти</div>
+              <div class="mock-button secondary">Создать аккаунт</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <h2>Почему сейчас демо</h2>
+        <p>
+          На этом этапе важнее отточить качество анализа, интерфейс и стабильность RAG-поиска. Поэтому платёжная часть
+          временно отключена, а доступ ограничен мягким дневным лимитом.
+        </p>
+      </section>
+    </div>
+  </div>
+
+  <div class="container">
+    <section class="donation">
+      <h2>Поддержать проект</h2>
+      <p style="color:#9fb0c3; line-height:1.7;">
+        Если хочешь помочь развитию Legalyze, можешь перейти на DonationAlerts по ссылке ниже.
+      </p>
+      <div class="donation-link">
+        <a class="button button-primary" href="https://dalink.to/legalyze" target="_blank" rel="noopener noreferrer">Перейти к DonationAlerts</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="container footer">
+    Сервис носит информационный характер и не заменяет очную консультацию с квалифицированным юристом.
+  </div>
+</body>
+</html>
