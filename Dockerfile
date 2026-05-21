@@ -5,6 +5,11 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl \
+    && update-ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY backend/requirements.txt /app/backend/requirements.txt
 
 RUN python -m pip install --upgrade pip \
