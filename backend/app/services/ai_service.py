@@ -2,13 +2,37 @@ import json
 from collections.abc import Generator
 
 from fastapi import HTTPException
-from openai import OpenAI
+from openai import APIConnectionError, APIStatusError, AuthenticationError, OpenAI
 
 from app.config import get_settings
 from app.models.schemas import ChatRequest, ChatResponse, RagStructuredAnswer
 from app.services.prompt_service import build_analysis_prompt, build_rag_prompt, build_system_prompt
 
 settings = get_settings()
+
+
+def create_response_or_raise(client: OpenAI, *, instructions: str, input_text: str):
+    try:
+        return client.responses.create(
+            model=settings.openai_model,
+            instructions=instructions,
+            input=input_text,
+        )
+    except AuthenticationError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail="Ошибка авторизации OpenAI. Проверьте OPENAI_API_KEY в Railway Variables.",
+        ) from exc
+    except APIConnectionError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail="Сервер не может подключиться к OpenAI API. Проверьте Railway deployment, сеть и SSL-сертификаты контейнера.",
+        ) from exc
+    except APIStatusError as exc:
+        raise HTTPException(
+            status_code=502,
+            detail=f"OpenAI API вернул ошибку: {exc.status_code}.",
+        ) from exc
 
 
 def get_client() -> OpenAI:
@@ -45,10 +69,10 @@ def ask_legal_assistant(payload: ChatRequest) -> ChatResponse:
     if payload.context:
         user_input += f"\n\nКонтекст пользователя:\n{payload.context}"
 
-    response = client.responses.create(
-        model=settings.openai_model,
+    response = create_response_or_raise(
+        client,
         instructions=build_system_prompt(),
-        input=user_input,
+        input_text=user_input,
     )
 
     return ChatResponse(
@@ -77,10 +101,10 @@ def stream_plain_chat(message: str, context: str | None = None) -> Generator[str
 
 def ask_with_rag(question: str, rag_context: str) -> RagStructuredAnswer:
     client = get_client()
-    response = client.responses.create(
-        model=settings.openai_model,
+    response = create_response_or_raise(
+        client,
         instructions=build_system_prompt(),
-        input=build_rag_prompt(question, rag_context),
+        input_text=build_rag_prompt(question, rag_context),
     )
     parsed = parse_json_object(extract_text(response))
     result = RagStructuredAnswer(**parsed)
@@ -119,9 +143,9 @@ def analyze_text(
         question=question,
         filename=filename,
     )
-    response = client.responses.create(
-        model=settings.openai_model,
+    response = create_response_or_raise(
+        client,
         instructions=build_system_prompt(),
-        input=prompt,
+        input_text=prompt,
     )
     return extract_text(response)
