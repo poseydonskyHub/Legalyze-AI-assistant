@@ -24,9 +24,13 @@ def create_response_or_raise(client: OpenAI, *, instructions: str, input_text: s
             detail="Ошибка авторизации OpenAI. Проверьте OPENAI_API_KEY в Railway Variables.",
         ) from exc
     except APIConnectionError as exc:
+        cause = exc.__cause__ or exc
         raise HTTPException(
             status_code=502,
-            detail="Сервер не может подключиться к OpenAI API. Проверьте Railway deployment, сеть и SSL-сертификаты контейнера.",
+            detail=(
+                "Сервер не может подключиться к OpenAI API. "
+                f"Техническая причина: {cause}"
+            ),
         ) from exc
     except APIStatusError as exc:
         raise HTTPException(
