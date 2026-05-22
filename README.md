@@ -1,4 +1,4 @@
-# Legalyze (скоро будет добавлена поддержка Windows)
+# Legalyze (Windows/Linux)
 
 `Legalyze` — это desktop AI-ассистент для анализа юридических документов и информационных консультаций.
 
@@ -9,6 +9,21 @@
 ![Login screen](https://github.com/poseydonskyHub/Legalyze-AI-assistant/blob/main/screenshots/login.png)
 
 ![Main window](https://github.com/poseydonskyHub/Legalyze-AI-assistant/blob/main/screenshots/main.png)
+
+## КАК ЗАПУСКАТЬ?
+
+### Linux
+1. Скачайте архив Legalyze-Linux.tar.gz
+2. Распакуйте его в удобную папку
+3. Откройте терминал в распакованной папке
+4. Выполните:
+   `chmod +x Legalyze`
+   `./Legalyze`
+
+### Windows
+1. Скачайте архив Legalyze-Windows.7z
+2. Распакуйте его в удобную папку
+3. Запустите файл Legalyze.exe
 
 ## Функционал включает:
 
@@ -22,15 +37,6 @@
 
 - `backend/` — FastAPI сервер
 - `qt_client/` — клиент на Qt/C++
-
-## КАК ЗАПУСКАТЬ?
-
-1. Скачайте архив Legalyze-Linux.tar.gz
-2. Распакуйте его в удобную папку
-3. Откройте терминал в распакованной папке
-4. Выполните:
-   chmod +x Legalyze
-   ./Legalyze
 
 ## Важное предупреждение
 
