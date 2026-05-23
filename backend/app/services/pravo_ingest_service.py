@@ -142,3 +142,38 @@ def ingest_pravo_url(db: Session, url: str, max_documents: int) -> tuple[list[Kn
         ingested.append(record)
 
     return ingested, skipped
+
+def seed_default_knowledge_base(db: Session) -> tuple[int, int]:
+    from app.rag.service import index_knowledge_base_chunks
+
+    settings = get_settings()
+    ingested_total = 0
+    indexed_total = 0
+
+    for url in settings.default_pravo_urls:
+        try:
+            ingested, _skipped = ingest_pravo_url(db, url, settings.default_pravo_max_documents)
+        except Exception as exc:
+            logger.warning("Failed to ingest default pravo.gov.ru source %s: %s", url, exc)
+            continue
+
+        ingested_total += len(ingested)
+
+        for record in ingested:
+            try:
+                indexed_count = index_knowledge_base_chunks(
+                    db=db,
+                    knowledge_base_id=record.id,
+                    title=record.title,
+                    source_url=record.source_url,
+                    text=record.extracted_text,
+                )
+                record.indexed_in_rag = "yes" if indexed_count > 0 else "no"
+                indexed_total += indexed_count
+            except Exception as exc:
+                logger.warning("Failed to index default law %s: %s", record.source_url, exc)
+                record.indexed_in_rag = "error"
+            db.add(record)
+            db.commit()
+
+    return ingested_total, indexed_total
