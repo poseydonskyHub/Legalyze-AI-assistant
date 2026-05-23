@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import logging
 from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 from sqlalchemy.orm import Session
 
+from app.config import get_settings
 from app.db.models import KnowledgeBaseRecord
 from app.services.document_service import parse_html, parse_pdf_text
 
@@ -16,6 +18,9 @@ ALLOWED_NETLOCS = {
     "publication.pravo.gov.ru",
     "www.publication.pravo.gov.ru",
 }
+
+logger = logging.getLogger(__name__)
+settings = get_settings()
 
 
 @dataclass
@@ -143,10 +148,10 @@ def ingest_pravo_url(db: Session, url: str, max_documents: int) -> tuple[list[Kn
 
     return ingested, skipped
 
+
 def seed_default_knowledge_base(db: Session) -> tuple[int, int]:
     from app.rag.service import index_knowledge_base_chunks
 
-    settings = get_settings()
     ingested_total = 0
     indexed_total = 0
 
