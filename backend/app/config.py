@@ -20,7 +20,9 @@ class Settings(BaseModel):
     openai_api_key: str | None = os.getenv("OPENAI_API_KEY")
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4.1")
     max_file_size_bytes: int = int(os.getenv("MAX_FILE_SIZE_BYTES", 15728640))
-     database_url: str = normalize_database_url(os.getenv("DATABASE_URL", "sqlite:///./legal_assistant.db"))
+    database_url: str = normalize_database_url(
+        os.getenv("DATABASE_URL", "sqlite:///./legal_assistant.db")
+    )
     upload_dir: str = os.getenv("UPLOAD_DIR", "./storage/uploads")
     embedding_model: str = os.getenv("EMBEDDING_MODEL", "text-embedding-3-large")
     embedding_dimensions: int = int(os.getenv("EMBEDDING_DIMENSIONS", 1536))
