@@ -14,6 +14,22 @@ def normalize_database_url(raw_url: str) -> str:
         return "postgresql+psycopg://" + url.removeprefix("postgres://")
     return url
 
+def parse_bool(raw_value: str | None, default: bool) -> bool:
+    if raw_value is None:
+        return default
+    return raw_value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def parse_csv(raw_value: str | None) -> list[str]:
+    if not raw_value:
+        return []
+    return [item.strip() for item in raw_value.split(",") if item.strip()]
+
+
+DEFAULT_PRAVO_URLS = [
+    "https://publication.pravo.gov.ru/document/0001202212290001",
+]
+
 class Settings(BaseModel):
     app_name: str = os.getenv("APP_NAME", "AI Legal Assistant API")
     api_version: str = os.getenv("API_VERSION", "1.4.0")
@@ -43,6 +59,9 @@ class Settings(BaseModel):
         "DONATION_WIDGET_URL",
         "https://www.donationalerts.com/widget/goal/9634016?token=TpCZoV1v6U7yj9LhPKWE",
     )
+    auto_ingest_default_laws: bool = parse_bool(os.getenv("AUTO_INGEST_DEFAULT_LAWS"), True)
+    default_pravo_urls: list[str] = parse_csv(os.getenv("DEFAULT_PRAVO_URLS")) or DEFAULT_PRAVO_URLS
+    default_pravo_max_documents: int = int(os.getenv("DEFAULT_PRAVO_MAX_DOCUMENTS", 5))
 
 
 @lru_cache
